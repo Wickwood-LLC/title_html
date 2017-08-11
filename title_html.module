@@ -1,0 +1,42 @@
+<?php
+
+/**
+ * Implements hook_preprocess_HOOK()
+ */
+function title_html_preprocess_node(&$variables) {
+  $node = $variables['node'];
+  // Get replacement title field if any.
+  $title_field_instance = title_field_replacement_get_label_field('node', $node->type);
+  if (!empty($title_field_instance)) {
+    // Get title field value
+    $items = field_get_items('node', $node, $title_field_instance['field_name']);
+    // Get renderable value having correctly formatter as per text format, if any.
+    $title = field_view_value('node', $node, $title_field_instance['field_name'], $items[0]);
+    // Set it as node title.
+    $variables['title'] = render($title);
+  }
+}
+
+/**
+ * Implements hook_menu_alter()
+ */
+function title_html_menu_alter(&$items) {
+  // Replace node page callback.
+  $items['node/%node']['page callback'] = 'title_html_node_page_view';
+}
+
+/**
+ * Page callback to replace node_page_view()
+ */
+function title_html_node_page_view($node) {
+  // First let it got as original way.
+  $output = node_page_view($node);
+  // Then set title having correctly formatted.
+  $title_field_instance = title_field_replacement_get_label_field('node', $node->type);
+  if (!empty($title_field_instance)) {
+    $items = field_get_items('node', $node, $title_field_instance['field_name']);
+    $title = field_view_value('node', $node, $title_field_instance['field_name'], $items[0]);
+    drupal_set_title(render($title), PASS_THROUGH);
+  }
+  return $output;
+}

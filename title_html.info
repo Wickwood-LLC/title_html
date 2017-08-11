@@ -1,0 +1,5 @@
+name = Title HTML
+description = Allows node title to have other HTML tags.
+core = 7.x
+package = Fields
+dependencies[] = title
