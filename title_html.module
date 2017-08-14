@@ -29,9 +29,9 @@ function title_html_menu_alter(&$items) {
  * Page callback to replace node_page_view()
  */
 function title_html_node_page_view($node) {
-  // First let it got as original way.
+  // First let get original title.
   $output = node_page_view($node);
-  // Then set title having correctly formatted.
+  // Then correctly format title.
   $title_field_instance = title_field_replacement_get_label_field('node', $node->type);
   if (!empty($title_field_instance)) {
     $items = field_get_items('node', $node, $title_field_instance['field_name']);
